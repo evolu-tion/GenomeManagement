@@ -13,3 +13,4 @@ from seq_manage import Genome_manager
 
 # gene_gff = Gff_manager('Mesculenta_305_v6.1.gene.gff3')
 cassava_genome = Genome_manager('Mesculenta_305_v6.fa','Mesculenta_305_v6.1.gene.gff3')
+cassava_genome.getAllPromoterKnownTSS(2000,0)

@@ -397,25 +397,28 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		for line in self.data:
 			if(line[2] == 'five_prime_UTR'):
 				if(line[6] == '+'):
-					seq = Fasta_manager.getSequence(self, line[0], line[3] - upstream, line[3] + downstream, line[6])
+					if(line[3] > upstream):
+						seq = Fasta_manager.getSequence(self, line[0], line[3] - upstream, line[3] + downstream, line[6])
+					else:
+						seq = Fasta_manager.getSequence(self, line[0], 1, line[3] + downstream, line[6])
 				else:
-					seq = Fasta_manager.getSequence(self, line[0], line[4] - downstream, line[4] + upstream, line[6])
-				
+					if(line[4]+upstream <= Fasta_manager.getChromosomeLength(self, line[0])):
+						seq = Fasta_manager.getSequence(self, line[0], line[4] - downstream, line[4] + upstream, line[6])
+					else:
+						seq = Fasta_manager.getSequence(self, line[0], line[4] - downstream, Fasta_manager.getChromosomeLength(self, line[0]), line[6])
 				if(seq == False):
 					not_selected += 1
 				else:
 					if(seq.count('N') == 0):
-						if(line[6] == '+'):
-							pass
-							 # print(">", line[8][0][3:],"|",line[3]-upstream,"|",line[3]+downstream,"|+" ,sep='')
+						if(len(seq) == upstream + downstream + 1):
+							if(line[6] == '+'):
+								print(">", line[8][0][3:],"|",line[0],"|",line[3]-upstream,"|",line[3]+downstream,"|+" ,sep='')
+							else:
+								print(">", line[8][0][3:],"|",line[0],"|",line[4]-downstream,"|",line[4]+upstream, "|-" ,sep='')
+							print(seq)
+							count_seq += 1
 						else:
-							pass
-							 # print(">", line[8][0][3:],"|",line[4]-downstream,"|",line[4]+upstream, "|-" ,sep='')
-						if(len(seq) != upstream + downstream + 1):
-							print("\nLength of sequence not correct please check code it again.")
-							exit()
-						 # print(seq)
-						count_seq += 1
+							not_selected +=1
 					else:
 						not_selected_polyN += 1
 		print("not selected sequence:", not_selected)
