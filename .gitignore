@@ -1,5 +1,7 @@
 Mesculenta_305_v6.1.gene.gff3
 Mesculenta_305_v6.fa
 Mesculenta_305_v6.fa.gz
-.pyc
-__pycache__/*
+*.pyc
+__pycache__
+*fa
+list_no_promoter.txt

@@ -25,7 +25,7 @@ all_promoter_in_genome = 'All'
 # 1) Promoter sequences
 # 2) List of genes cannot retrieved promoters
 output_file_promoter = 'out/promoter.fa'
-output_file_list_no_promoter = 'out/list_no_promoter.fa'
+output_file_list_no_promoter = 'out/list_no_promoter.txt'
 
 ##################################################################################################
 
