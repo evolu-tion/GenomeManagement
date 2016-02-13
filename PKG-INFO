@@ -1,23 +1,20 @@
 Metadata-Version: 1.0
-Name: MoonGrabber
-Version: 0.4.2b3
-Summary: Steal the Moon from your favorite planet.
-Home-page: http://pypi.python.org/pypi/MoonGrabber/
-Author: Dr. Nefario
-Author-email: nef@grulabs.com
+Name: GenomeManagement
+Version: 0.1b
+Summary: "Easy for biology manage genome information"
+Home-page: http://bml.sbi.kmutt.ac.th
+Author: Nattawet Sriwichai
+Author-email: nattawet.sri@mail.kmutt.ac.th
 License: LICENSE.txt
 Description: ===========
-        Moon Grabber
+        Genome Management
         ===========
         
-        Moon Grabber is a super-awesome module which lets you steal the Moon.
+        Easy for genome data management based on cassava genome
         But promise to put it back.You can use it like this::
         
-            #!/usr/bin/env python
+            #!/usr/bin/env python3
+            from seq_manage import Fasta_manager, Gff_manager, Genome_manager
+
         
-            from moongrabber import battery, moongun
-        
-            if battery.is_full():
-                moon = moongun.grab_moon(planet="Earth")
-        
-Platform: UNKNOWN
+Platform: Python 3.4
