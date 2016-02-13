@@ -3,5 +3,7 @@ Mesculenta_305_v6.fa
 Mesculenta_305_v6.fa.gz
 *.pyc
 __pycache__
+__pycache__/*
 *fa
-list_no_promoter.txt
+*.html
+*.txt
