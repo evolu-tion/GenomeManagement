@@ -1,4 +1,11 @@
+# Author: Nattawet Sriwichai
+# Author-email: nattawet.sri@mail.kmutt.ac.th
+# https://github.com/evolu-tion/GenomeManagement
+# Copyright (c) 2016 Nattawet Sriwichai
+# License: LICENSE.txt 
+
 ############################### Initial Configuration ###########################################
+
 # Input files is promoter sequence (fasta format) 
 file_promoter = "out/promoter.fa"
 
@@ -19,6 +26,8 @@ file_name_tfbs_on_promoter_CpG_island = 'out/tfbs_on_promoter_CpG_island.txt'
 file_name_tfbs_on_promoter_filltered = 'out/tfbs_on_promoter_filltered_[sim='+str(filltered_similar_cutoff)+'_strand_'+filltered_strand+'].txt'
 
 ##################################################################################################
+
+
 
 
 
@@ -122,7 +131,7 @@ f_CpG_island.write('Promoter_id\tBegin\tEnd\tLength\tGC freq\tCpG ratio\tAT skew
 
 fasta_file = open(file_promoter, 'r')
 gene = fasta_file.read().split('>')[1:]
-for i in range(len(gene))[:1]:
+for i in range(len(gene)):
 	gene[i] = gene[i].split('\n')
 	gene[i][0] = gene[i][0].split('|')
 	gene_name = gene[i][0][0]

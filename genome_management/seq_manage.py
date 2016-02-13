@@ -1,3 +1,9 @@
+# Author: Nattawet Sriwichai
+# Author-email: nattawet.sri@mail.kmutt.ac.th
+# https://github.com/evolu-tion/GenomeManagement
+# Copyright (c) 2016 Nattawet Sriwichai
+# License: LICENSE.txt 
+
 import re
 import gzip
 import codecs
