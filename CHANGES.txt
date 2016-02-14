@@ -1,2 +1,0 @@
-v0.1a,	2016-03-08 -- Initial release.
-v0.1b,	2016-03-13 -- edit to retrive promoter from TSS or TLS
