@@ -205,7 +205,8 @@ class Gff_manager(object):
 	def __init__(self, file_name):
 		self.data = []
 		self.gene_struc = {}
-		gene_annotation = []
+		self.chromosome_contain_gene = {} # {[(chr1,'+')] = [..........]}
+
 		gene_name = ""
 		if(file_name.find('.gz') > 0):
 			filegz = gzip.open(file_name, 'rb')
@@ -213,13 +214,14 @@ class Gff_manager(object):
 		else:
 			gff_file = open(file_name, 'r')
 		for line in gff_file:
-			if(line.find('#')==-1 and line != ''):
+			if(line[0] != '#' and line != ''):
 				line = line.split()
 				line[3] = int(line[3])
 				line[4] = int(line[4])
 				line[8] = line[8].split(';')
 				self.data.append(line)
 				if(line[2] != 'gene'):
+
 					gene_annotation.append(line)
 				else:
 					if(gene_name != ''):
@@ -229,6 +231,18 @@ class Gff_manager(object):
 					gene_name = line[8][1][5:]
 		sorted(gene_annotation,key=itemgetter(4,5))
 		self.gene_struc[gene_name] = gene_annotation
+
+		table = self.getTableSpecificType("gene")
+		table = sorted(table, key=itemgetter(0,6,4,3))
+		for line in table:
+			if (line[0],line[6]) in self.chromosome_contain_gene:
+				self.chromosome_contain_gene[(line[0],line[6])].append(line)
+			else:
+				self.chromosome_contain_gene[(line[0],line[6])]=[line]
+		for key, value in self.chromosome_contain_gene.items():
+			if (key[1] == '-'):
+				self.chromosome_contain_gene[key] = sorted(value, key=itemgetter(3,4), reverse=True)
+
 	def getNumgerOfGffLine(self):
 		return len(self.data)
 	def getTable(self):
@@ -237,6 +251,12 @@ class Gff_manager(object):
 		table = []
 		for line in self.data:
 			if(line[2] == gene_struc_type):
+				table.append(line)
+		return table
+	def getTableSpecificTypeAndStrand(self, gene_struc_type, strand):
+		table = []
+		for line in self.data:
+			if(line[2] == gene_struc_type and line[6]==strand):
 				table.append(line)
 		return table
 	def printdata(self,type="five_prime_UTR"):
@@ -283,6 +303,33 @@ class Gff_manager(object):
 			return True
 		else:
 			return False
+	def getGeneForward(self,gene_name):
+		# return end position of forward gene, if don't have forward gene return False
+		x = self.gene_struc[gene_name]
+		chromosome = x[0][0]
+		strand = x[0][6]
+		start=x[0][3]
+		end=x[0][4]
+		table_gene = self.chromosome_contain_gene[(chromosome, strand)]
+		
+		if(strand=="+"):
+			i=0
+			while(i < len(table_gene) and table_gene[i][4] < start and table_gene[i][3] < start):
+				i=i+1
+			i=i-1
+			if(i==-1):
+				return False
+			else:
+				return table_gene[i][4]
+		else:
+			i=0
+			while(i < len(table_gene) and end < table_gene[i][4] and end < table_gene[i][3]):
+				i=i+1
+			i=i-1
+			if(i==-1):
+				return False
+			else:
+				return table_gene[i][3]	
 
 class Genome_manager(Fasta_manager, Gff_manager):
 	def __init__(self, fastaFile, GffFile):
@@ -450,7 +497,10 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		print("not selected sequence:", not_selected)
 		print("not selected sequence because N:", not_selected_polyN)
 		print("It including ", count_seq, "sequences for next step")
-	def check_correct_position(self, chromosome_name, prom_start, prom_end, strand, min_len):
+	def check_correct_position(self, chromosome_name, gene_name, prom_start, prom_end, strand, min_len):
+		# Return False when postion of promoter is not correct, if promoter region is correct, it return promoter old postion or correct position
+		
+		# Check the promoter is inside chromosome
 		chromosome_len = Fasta_manager.getChromosomeLength(self, chromosome_name)
 		if prom_start < 1:
 			prom_start = 1
@@ -460,6 +510,22 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		elif prom_end > chromosome_len:
 			prom_end = chromosome_len
 
+		# Check the promoter is not overlap forward genes
+		forward_end_pos = self.getGeneForward(gene_name)
+		if(forward_end_pos != False):
+			if strand == '+':
+				if prom_start < forward_end_pos and prom_end < forward_end_pos:
+					prom_start = forward_end_pos - 1
+				elif prom_end == forward_end_pos:
+					prom_start = prom_end
+			elif strand == '-':
+				if prom_end > forward_end_pos + 1 and prom_start < forward_end_pos:
+					prom_end = forward_end_pos + 1
+				elif prom_start == forward_end_pos:
+					prom_end = prom_start
+
+		# Check promoter not contain poly N in the end of promoter [NNNNNNNNNNNNNATGGCAAATCGCCNNNN  --->   ATGGCAAATCGCCNNNN]
+		# If length of promoter more than min_len is return currect postion, else return False (This gene not have promoter)
 		sequence = Fasta_manager.getSequence(self, chromosome_name, prom_start, prom_end, strand)
 		if sequence[0] == 'N':
 			pos = re.search('[ATGC]+', sequence)
@@ -476,7 +542,6 @@ class Genome_manager(Fasta_manager, Gff_manager):
 			else:
 				return False
 		elif prom_end - prom_start +1 >= min_len:
-		# if prom_end - prom_start +1 >= min_len:
 			return {'promoter_start': prom_start, 'promoter_end': prom_end}
 		else:
 			return False
@@ -493,11 +558,11 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][3] - upstream
 				promoter_end = gene_struc_table[0][3] - downstream - 1
 			else:
-				sorted(gene_struc_table,key=itemgetter(4), reverse=True)
+				gene_struc_table = sorted(gene_struc_table,key=itemgetter(4), reverse=True)
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
-			new_promoter_position = self.check_correct_position(chromosome, promoter_start, promoter_end, strand, promoter_min_len)
+			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len)
 			if(new_promoter_position==False):
 				self.list_of_gene_no_promoter.append(gene_name)
 				return ''
@@ -523,7 +588,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 			strand = gene_struc_table[0][6]
 			chromosome = gene_struc_table[0][0]
 			if(strand == '+'):
-				sorted(gene_struc_table,key=itemgetter(3), reverse=True)
+				gene_struc_table = sorted(gene_struc_table,key=itemgetter(3), reverse=True)
 				promoter_start = gene_struc_table[0][3] - upstream
 				promoter_end = gene_struc_table[0][3] - downstream - 1
 			else:
@@ -531,7 +596,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
-			new_promoter_position = self.check_correct_position(chromosome, promoter_start, promoter_end, strand, promoter_min_len)
+			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len)
 			if(new_promoter_position==False):
 				self.list_of_gene_no_promoter.append(gene_name)
 				return ''

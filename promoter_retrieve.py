@@ -38,6 +38,9 @@ file_genome_seq = 'Mesculenta_305_v6.fa'
 file_gff = 'Mesculenta_305_v6.1.gene.gff3'
 file_custom_list_of_gene = 'list_gene.txt'
 
+
+
+
 # Configuration promoter properties
 # 1) Promoter stating form 'TSS' or 'TLS' 
 # 2) Upstream length form 'TSS' or 'TLS' 
@@ -48,7 +51,7 @@ start_promoter_from = 'TSS'
 upstream = 2000
 downstream = 0
 promoter_minimum_length = 500
-all_promoter_in_genome = 'No'
+all_promoter_in_genome = 'Yes'
 
 # Output file including:
 # 1) Promoter sequences
@@ -67,6 +70,7 @@ import sys
 from seq_manage import Fasta_manager
 from seq_manage import Gff_manager
 from seq_manage import Genome_manager
+
 
 def main():
 	if not os.path.exists(file_genome_seq):
