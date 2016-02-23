@@ -87,8 +87,9 @@ class Fasta_manager(object):
 
 	def checkChromosome(self, chromosome, start, end):
 		if(start>end):
-			print("Please the start nucleotide should be less")
+			print("Error: checkChromosome(chromosome, start, end) of", chromosome, "[" , start, "-", end ,"], the start position should be less than end")
 			return False
+			exit()
 		elif(chromosome in self.chromosomeLength):
 			if(end<=self.chromosomeLength[chromosome]):
 				return True
@@ -509,6 +510,8 @@ class Genome_manager(Fasta_manager, Gff_manager):
 			prom_end = chromosome_len
 		elif prom_end > chromosome_len:
 			prom_end = chromosome_len
+		if prom_end < 1:
+			prom_end = 1
 
 		# Check the promoter is not overlap forward genes
 		forward_end_pos = self.getGeneForward(gene_name)

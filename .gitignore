@@ -4,6 +4,8 @@ Mesculenta_305_v6.fa.gz
 *.pyc
 __pycache__
 __pycache__/*
-*fa
+*.fa
+*.gff3
+*.gtf
 *.html
 *.txt

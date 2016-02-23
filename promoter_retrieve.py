@@ -33,12 +33,10 @@ THE SOFTWARE.
 # 1) Genome sequence file (fasta format)
 # 2) Gene feature format  (gff3 format)
 # 3) List of genes (tab-delimited format) is optional when you want to custome list
+# cassava genome
 file_genome_seq = 'Mesculenta_305_v6.fa'
 file_gff = 'Mesculenta_305_v6.1.gene.gff3'
 file_custom_list_of_gene = 'list_gene.txt'
-
-
-
 
 # Configuration promoter properties
 # 1) Promoter stating form 'TSS' or 'TLS' 
