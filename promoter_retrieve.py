@@ -33,7 +33,6 @@ THE SOFTWARE.
 # 1) Genome sequence file (fasta format)
 # 2) Gene feature format  (gff3 format)
 # 3) List of genes (tab-delimited format) is optional when you want to custome list
-# 4) Output file of promoter (fasta format)
 file_genome_seq = 'Mesculenta_305_v6.fa'
 file_gff = 'Mesculenta_305_v6.1.gene.gff3'
 file_custom_list_of_gene = 'list_gene.txt'

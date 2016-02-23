@@ -225,11 +225,11 @@ class Gff_manager(object):
 					gene_annotation.append(line)
 				else:
 					if(gene_name != ''):
-						sorted(gene_annotation,key=itemgetter(4,5))
+						gene_annotation = sorted(gene_annotation,key=itemgetter(4,5))
 						self.gene_struc[gene_name] = gene_annotation
 					gene_annotation = [line]
 					gene_name = line[8][1][5:]
-		sorted(gene_annotation,key=itemgetter(4,5))
+		gene_annotation = sorted(gene_annotation,key=itemgetter(4,5))
 		self.gene_struc[gene_name] = gene_annotation
 
 		table = self.getTableSpecificType("gene")
@@ -592,7 +592,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][3] - upstream
 				promoter_end = gene_struc_table[0][3] - downstream - 1
 			else:
-				sorted(gene_struc_table,key=itemgetter(4))
+				gene_struc_table = sorted(gene_struc_table,key=itemgetter(4))
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
