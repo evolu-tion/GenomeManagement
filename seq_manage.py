@@ -498,7 +498,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		print("not selected sequence:", not_selected)
 		print("not selected sequence because N:", not_selected_polyN)
 		print("It including ", count_seq, "sequences for next step")
-	def check_correct_position(self, chromosome_name, gene_name, prom_start, prom_end, strand, min_len):
+	def check_correct_position(self, chromosome_name, gene_name, prom_start, prom_end, strand, min_len, removed_N_gap):
 		# Return False when postion of promoter is not correct, if promoter region is correct, it return promoter old postion or correct position
 		
 		# Check the promoter is inside chromosome
@@ -529,27 +529,36 @@ class Genome_manager(Fasta_manager, Gff_manager):
 
 		# Check promoter not contain poly N in the end of promoter [NNNNNNNNNNNNNATGGCAAATCGCCNNNN  --->   ATGGCAAATCGCCNNNN]
 		# If length of promoter more than min_len is return currect postion, else return False (This gene not have promoter)
-		sequence = Fasta_manager.getSequence(self, chromosome_name, prom_start, prom_end, strand)
-		if sequence[0] == 'N':
-			pos = re.search('[ATGC]+', sequence)
-			if(pos != None):
-				seq = sequence[pos.start():]
-				if strand == '+' and len(seq)>=min_len:
-					prom_start += pos.start()
-					return {'promoter_start': prom_start, 'promoter_end': prom_end}
-				if strand == '-' and len(seq)>=min_len:
-					prom_end -= pos.start()
-					return {'promoter_start': prom_start, 'promoter_end': prom_end}
+		if (removed_N_gap == True):
+			sequence = Fasta_manager.getSequence(self, chromosome_name, prom_start, prom_end, strand)
+			if sequence[0] == 'N':
+				pos = re.search('[ATGC]+', sequence)
+				if(pos != None):
+					seq = sequence[pos.start():]
+					if strand == '+' and len(seq)>=min_len:
+						prom_start += pos.start()
+						return {'promoter_start': prom_start, 'promoter_end': prom_end}
+					if strand == '-' and len(seq)>=min_len:
+						prom_end -= pos.start()
+						return {'promoter_start': prom_start, 'promoter_end': prom_end}
+					else:
+						return False
 				else:
 					return False
+			elif prom_end - prom_start +1 >= min_len:
+				return {'promoter_start': prom_start, 'promoter_end': prom_end}
 			else:
 				return False
-		elif prom_end - prom_start +1 >= min_len:
-			return {'promoter_start': prom_start, 'promoter_end': prom_end}
 		else:
-			return False
+			seq = Fasta_manager.getSequence(self, chromosome_name, prom_start, prom_end, strand)
+			if strand == '+' and len(seq)>=min_len:
+				return {'promoter_start': prom_start, 'promoter_end': prom_end}
+			if strand == '-' and len(seq)>=min_len:
+				return {'promoter_start': prom_start, 'promoter_end': prom_end}
+			else:
+				return False
 
-	def getPromoterOfGeneFromTLS(self, gene_name, upstream, downstream, promoter_min_len):
+	def getPromoterOfGeneFromTLS(self, gene_name, upstream, downstream, promoter_min_len, removed_N_gap):
 		gene_struc_table = Gff_manager.getTableDataOfGeneAndType(self, gene_name, "CDS")
 		if(len(gene_struc_table)==0):
 			print("Gene name is not currect, please check it again")
@@ -565,7 +574,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
-			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len)
+			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len, removed_N_gap)
 			if(new_promoter_position==False):
 				self.list_of_gene_no_promoter.append(gene_name)
 				return ''
@@ -576,13 +585,13 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				text = ">"+ gene_name+"_promoter|" +chromosome+ "|" +str(promoter_start) +"|" +str(promoter_end) +"|"+strand+"|length="+ str(promoter_end-promoter_start+1)+ "|from 5'UTR\n"
 				text = text + seq + "\n"
 				return text
-	def getAllPromoterOfGeneFromTLS(self, upstream, downstream, promoter_min_len):
+	def getAllPromoterOfGeneFromTLS(self, upstream, downstream, promoter_min_len, removed_N_gap):
 		for gene_name in Gff_manager.getGeneList(self):
-			self.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_min_len)
+			self.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_min_len, removed_N_gap)
 		print("\n-----------List of gene no promoter-----------")
 		for gene_name in self.list_of_gene_no_promoter:
 			print(gene_name)
-	def getPromoterOfGeneFromTSS(self, gene_name, upstream, downstream, promoter_min_len):
+	def getPromoterOfGeneFromTSS(self, gene_name, upstream, downstream, promoter_min_len, removed_N_gap):
 		gene_struc_table = Gff_manager.getTableDataOfGeneAndType(self, gene_name, "five_prime_UTR")
 		if(len(gene_struc_table)==0):
 			#print("No information of 5'UTR of gene", gene_name)
@@ -599,7 +608,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
-			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len)
+			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len,removed_N_gap)
 			if(new_promoter_position==False):
 				self.list_of_gene_no_promoter.append(gene_name)
 				return ''
@@ -613,9 +622,9 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				# print(">", gene_name,"_promoter|",chromosome, "|",promoter_start,"|",promoter_end,"|",strand,"|length=", promoter_end-promoter_start+1, "|from 5'UTR", sep="")
 				# print(seq)
 
-	def getAllPromoterOfGeneFromTSS(self, upstream, downstream, promoter_min_len):
+	def getAllPromoterOfGeneFromTSS(self, upstream, downstream, promoter_min_len, removed_N_gap):
 		for gene_name in Gff_manager.getGeneList(self):
-			self.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_min_len)
+			self.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_min_len, removed_N_gap)
 			
 		print("\n-----------List of gene no promoter-----------")
 		for gene_name in self.list_of_gene_no_promoter:

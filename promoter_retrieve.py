@@ -43,12 +43,14 @@ file_custom_list_of_gene = 'list_gene.txt'
 # 2) Upstream length form 'TSS' or 'TLS' 
 # 3) Downstream length form 'TSS' or 'TLS' 
 # 4) If you custom list of interested gene please type 'No', wherease if you want to retrieved whole genome please type 'Yes' 
+# 5) If you want to remove N gap in begin sequence please type 'Yes', wherease type 'No'
 
-start_promoter_from = 'TSS'
+start_promoter_from = 'TLS'
 upstream = 2000
 downstream = 0
-promoter_minimum_length = 500
+promoter_minimum_length = 1
 all_promoter_in_genome = 'Yes'
+removed_N_gap_begins_promoter = 'Yes'
 
 # Output file including:
 # 1) Promoter sequences
@@ -79,6 +81,15 @@ def main():
 	if all_promoter_in_genome == 'No' and not os.path.exists(file_custom_list_of_gene):
 		print("Location of list of genes is not correct")
 		exit()
+	
+	if removed_N_gap_begins_promoter == 'Yes' or removed_N_gap_begins_promoter == 'yes':
+		removed_N_gap = True
+	elif removed_N_gap_begins_promoter == 'No' or removed_N_gap_begins_promoter == 'no':
+		removed_N_gap = False
+	else:
+		print("Please type 'removed_N_gap_begins_promoter' again in 'Yes' or 'No'")
+		exit()
+
 
 	os.makedirs(os.path.dirname(output_file_promoter), exist_ok=True)
 	os.makedirs(os.path.dirname(output_file_list_no_promoter), exist_ok=True)
@@ -103,11 +114,11 @@ def main():
 		if(start_promoter_from == 'TLS'):
 			for gene_name in custom_gene_list:
 				print("Finding promoter from TLS of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length))
+				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
 		elif(start_promoter_from == 'TSS'):
 			for gene_name in custom_gene_list:
 				print("Finding promoter from TSS  of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length))
+				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
 	else:
 
 		# Finding promoter of all genes in genome
@@ -117,11 +128,11 @@ def main():
 		if(start_promoter_from == 'TLS'):
 			for gene_name in genome.getGeneList():
 				print("Finding promoter from TLS  of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length))
+				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
 		elif(start_promoter_from == 'TSS'):
 			for gene_name in genome.getGeneList():
 				print("Finding promoter from TSS  of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length))
+				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
 
 	print("Write list of gene no promoter")
 	error_promoter = open(output_file_list_no_promoter, 'w')

@@ -65,6 +65,13 @@ import urllib.parse
 import urllib.request
 import re
 import os
+import sys
+
+if not os.path.exists(file_promoter):
+	print("Location of fasta file is not correct")
+	exit()
+
+os.makedirs(os.path.dirname(backup_file_path), exist_ok=True)
 
 def PlantPAN2(seq_name, sequence):
 	table_data = []
