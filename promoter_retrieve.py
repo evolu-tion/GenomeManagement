@@ -3,6 +3,7 @@
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
+Version: 1.1b 2016-02-26
 License: MIT License
 
 The MIT License
