@@ -569,7 +569,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 			chromosome = gene_struc_table[0][0]
 			if(strand == '+'):
 				promoter_start = gene_struc_table[0][3] - upstream
-				promoter_end = gene_struc_table[0][3] - downstream - 1
+				promoter_end = gene_struc_table[0][3] + downstream - 1
 			else:
 				gene_struc_table = sorted(gene_struc_table,key=itemgetter(4), reverse=True)
 				promoter_start = gene_struc_table[0][4] - downstream + 1
@@ -583,7 +583,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = new_promoter_position['promoter_start']
 				promoter_end = new_promoter_position['promoter_end']
 				seq = Fasta_manager.getSequence(self, chromosome, promoter_start, promoter_end, strand)
-				text = ">"+ gene_name+"_promoter|" +chromosome+ "|" +str(promoter_start) +"|" +str(promoter_end) +"|"+strand+"|length="+ str(promoter_end-promoter_start+1)+ "|from 5'UTR\n"
+				text = ">"+ gene_name+"_promoter|" +chromosome+ "|" +str(promoter_start) +"|" +str(promoter_end) +"|"+strand+"|length="+ str(promoter_end-promoter_start+1)+ "|from CDS\n"
 				text = text + seq + "\n"
 				return text
 	def getAllPromoterOfGeneFromTLS(self, upstream, downstream, promoter_min_len, removed_N_gap):
@@ -603,7 +603,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 			if(strand == '+'):
 				gene_struc_table = sorted(gene_struc_table,key=itemgetter(3), reverse=True)
 				promoter_start = gene_struc_table[0][3] - upstream
-				promoter_end = gene_struc_table[0][3] - downstream - 1
+				promoter_end = gene_struc_table[0][3] + downstream - 1
 			else:
 				gene_struc_table = sorted(gene_struc_table,key=itemgetter(4))
 				promoter_start = gene_struc_table[0][4] - downstream + 1
