@@ -3,7 +3,7 @@
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.1b 2016-02-26
+Version: 1.1c 2016-03-09
 License: MIT License
 
 The MIT License
@@ -48,10 +48,10 @@ file_custom_list_of_gene = 'list_gene.txt'
 
 start_promoter_from = 'TLS'
 upstream = 2000
-downstream = 0
-promoter_minimum_length = 1
-all_promoter_in_genome = 'Yes'
-removed_N_gap_begins_promoter = 'Yes'
+downstream = 500
+promoter_minimum_length = 100
+all_promoter_in_genome = 'No'
+removed_N_gap_begins_promoter = 'No'
 
 # Output file including:
 # 1) Promoter sequences
