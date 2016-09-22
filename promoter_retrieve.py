@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+
 """ 
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.1c 2016-03-09
+Version: 1.2 2016-09-22
 License: MIT License
 
 The MIT License
@@ -29,15 +30,91 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. 
 """
 
+import os
+import sys
+from optparse import OptionParser
+
+if "--version" in sys.argv[1:]:
+	# TODO - Capture version of Select_representative_miRNA
+	print("Promoter retrived version 1.2")
+	sys.exit(0)
+
+# Parse Command Line
+usage = """
+
+Description:
+This script designed for retrieving promoter sequences.
+
+usage:
+$ python promoter_retrieve.py \\
+	--out_promoter <output_file.fa> \\
+	--genome <genome.fa> \\
+	--gff <genome.gff> \\
+	--type <TLS/TSS> \\
+	--upstream <bp> \\
+	--downstream <bp> \\
+	--all_gene <Y/N> \\
+	--list_of_interest <gene_list.txt> \\
+	--remove_n_gap <Y/N>
+"""
+
+parser = OptionParser(usage=usage)
+parser.add_option("-o", "--output", dest="file_output",
+	default=None, metavar="FILE",
+	help="Output fasta file name")
+parser.add_option("-g", "--genome", dest="file_genome_seq",
+	default=None, metavar="FILE",
+	help="Input FASTA of genome sequence file")
+parser.add_option("-f", "--gff", dest="file_gff",
+	default=None, metavar="FILE",
+	help="Input GFF annotation file")
+parser.add_option("-t", "--type", dest="type",
+	default=None, metavar="<TSS/TLS>",
+	help="Selecting the promoter sequence from TSS or TLS")
+parser.add_option("-u", "--upstream", dest="upstream",
+	default=1500, metavar="int",
+	help="Length of upstream from TLS or TSS (bps)")
+parser.add_option("-d", "--downstream", dest="downstream",
+	default=0, metavar="int",
+	help="Length of downstream from TLS or TSS (bps)")
+parser.add_option("-a", "--all_gene", dest="all_gene",
+	default="Yes", metavar="<Y/N>",
+	help="If you want to retrieve all genes in genome please type <Yes> or <No>")
+parser.add_option("-l", "--selected_gene_list", dest="gene_list",
+	default=None, metavar="FILE",
+	help="List of selecting genes for retrieving promoter in text file (is optional if do not selecting all genome)")
+parser.add_option("-r", "--remove_N_gap", dest="remove_N_gap",
+	default='N', metavar="<Y/N>",
+	help="Remove N gap (Y/N)")
+parser.add_option("-m", "--min_length", dest="min_length",
+	default=100, metavar="int",
+	help="Minimum number of promoter length (bp), default=100")
+options,args = parser.parse_args()
+
+if not options.file_output:
+	sys.exit("Missing output fasta file, -o <FILE> or --output=<FILE>")
+if not options.file_genome_seq or not os.path.exists(options.file_genome_seq):
+	sys.exit("Missing FASTA of genome sequence file, -g <FILE> or --genome=<FILE>")
+if not options.file_gff or not os.path.exists(options.file_gff):
+	sys.exit("Missing GFF3 annotation file of genome, -f <FILE> or --gff=<FILE>")
+if not options.type:
+	sys.exit("Missing information of promoter sequence from TSS or TLS, -t <TLS/TSS> or --type=<TLS/TSS>")
+if not options.upstream:
+	sys.exit("Missing length of upstream from TLS or TSS (bps), -u int or --upstream=int")
+if not options.downstream:
+	sys.exit("Missing length of downstream from TLS or TSS (bps), -d int or --downstream=int")
+if not options.all_gene:
+	sys.exit("Missing retrieve all genes in genome or not, -a int or --all_gene=<Yes/No>")
+
 ############################### Initial Configuration ###########################################
 # Genome input files including: 
 # 1) Genome sequence file (fasta format)
 # 2) Gene feature format  (gff3 format)
 # 3) List of genes (tab-delimited format) is optional when you want to custome list
 # cassava genome
-file_genome_seq = 'Mesculenta_305_v6.fa'
-file_gff = 'Mesculenta_305_v6.1.gene.gff3'
-file_custom_list_of_gene = 'list_gene.txt'
+file_genome_seq = options.file_genome_seq
+file_gff = options.file_gff
+file_custom_list_of_gene = options.gene_list
 
 # Configuration promoter properties
 # 1) Promoter stating form 'TSS' or 'TLS' 
@@ -46,18 +123,18 @@ file_custom_list_of_gene = 'list_gene.txt'
 # 4) If you custom list of interested gene please type 'No', wherease if you want to retrieved whole genome please type 'Yes' 
 # 5) If you want to remove N gap in begin sequence please type 'Yes', wherease type 'No'
 
-start_promoter_from = 'TLS'
-upstream = 2000
-downstream = 500
+start_promoter_from = options.type
+upstream = int(options.upstream)
+downstream = int(options.downstream)
 promoter_minimum_length = 100
-all_promoter_in_genome = 'No'
-removed_N_gap_begins_promoter = 'No'
+all_promoter_in_genome = options.gene_list
+removed_N_gap_begins_promoter = options.remove_N_gap
 
 # Output file including:
 # 1) Promoter sequences
 # 2) List of genes cannot retrieved promoters
-output_file_promoter = 'out/promoter.fa'
-output_file_list_no_promoter = 'out/list_no_promoter.txt'
+output_file_promoter = options.file_output
+output_file_list_no_promoter = options.file_output + '_list_no_promoter.txt'
 
 ##################################################################################################
 
@@ -73,22 +150,16 @@ from seq_manage import Genome_manager
 
 
 def main():
-	if not os.path.exists(file_genome_seq):
-		print("Location of genome sequence file is not correct")
-		exit()
-	if not os.path.exists(file_gff):
-		print("Location of gene feature file is not correct")
-		exit()
-	if all_promoter_in_genome == 'No' and not os.path.exists(file_custom_list_of_gene):
+	if all_promoter_in_genome == 'N' and not os.path.exists(file_custom_list_of_gene):
 		print("Location of list of genes is not correct")
 		exit()
 	
-	if removed_N_gap_begins_promoter == 'Yes' or removed_N_gap_begins_promoter == 'yes':
+	if removed_N_gap_begins_promoter == 'Y' or removed_N_gap_begins_promoter == 'y':
 		removed_N_gap = True
-	elif removed_N_gap_begins_promoter == 'No' or removed_N_gap_begins_promoter == 'no':
+	elif removed_N_gap_begins_promoter == 'N' or removed_N_gap_begins_promoter == 'n':
 		removed_N_gap = False
 	else:
-		print("Please type 'removed_N_gap_begins_promoter' again in 'Yes' or 'No'")
+		print("Missing --remove_N_gap=<Y/N>")
 		exit()
 
 
@@ -96,7 +167,7 @@ def main():
 	os.makedirs(os.path.dirname(output_file_list_no_promoter), exist_ok=True)
 	out_promoter = open(output_file_promoter, 'w')
 
-	if(all_promoter_in_genome == 'No'):
+	if(all_promoter_in_genome == 'N' or all_promoter_in_genome == 'n'):
 		custom_gene_list = open(file_custom_list_of_gene).read().splitlines()
 		
 		# Check gene list in genomes
