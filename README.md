@@ -1,24 +1,20 @@
 # Genome Management Package
-This tool is copyright 2016 by Nattawet Sriwichai, King Mongkut's University Technology Thonburi (Bioinformatics and Systems Biology), Th. All rights reserved. See the licence text below.
+This tool is copyright 2016 by Nattawet Sriwichai, 
+King Mongkut's University Technology Thonburi (Bioinformatics and Systems Biology Program), Thailand. 
+All rights reserved. See the licence text below.
 
-# Usage: Promoter of gene retrieving
-Edit the configuration on ``promoter_retrieve.py`` of program required and set parameter including
-
-1. Genome File: Genome sequence file, Gene feature file, List of genes to retreive promoter
-
-2. Promoter Properties: the stating point of promoter is 'TSS' or 'TLS', length of upstream and downstream.
-
+# Usage: Promoter of genes retrieving
 Then run python script by used command line on windows or unix::
 
-    python promoter_retrieve.py \\
-		--out_promoter <output_file.fa> \\
-		--genome <genome.fa> \\
-		--gff <genome.gff> \\
-		--type <TLS/TSS> \\
-		--upstream <bp> \\
-		--downstream <bp> \\
-		--all_gene <Y/N> \\
-		--list_of_interest <gene_list.txt> \\
+    python promoter_retrieve.py \
+		--out_promoter <output_file.fa> \
+		--genome <genome.fa> \
+		--gff <genome.gff> \
+		--type <TLS/TSS> \
+		--upstream <bp> \
+		--downstream <bp> \
+		--all_gene <Y/N> \
+		--list_of_interest <gene_list.txt> \
 		--remove_n_gap <Y/N>
 
 # Licence (MIT)
