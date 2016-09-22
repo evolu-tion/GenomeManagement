@@ -10,7 +10,16 @@ Edit the configuration on ``promoter_retrieve.py`` of program required and set p
 
 Then run python script by used command line on windows or unix::
 
-    python promoter_retrieve.py
+    python promoter_retrieve.py \\
+		--out_promoter <output_file.fa> \\
+		--genome <genome.fa> \\
+		--gff <genome.gff> \\
+		--type <TLS/TSS> \\
+		--upstream <bp> \\
+		--downstream <bp> \\
+		--all_gene <Y/N> \\
+		--list_of_interest <gene_list.txt> \\
+		--remove_n_gap <Y/N>
 
 # Licence (MIT)
 Copyright (c) 2016 King Mongkut's University technology Thonburi
