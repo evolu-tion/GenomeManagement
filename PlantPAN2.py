@@ -67,6 +67,7 @@ import urllib.request
 import re
 import os
 import sys
+import time, datetime
 
 if not os.path.exists(file_promoter):
 	print("Location of fasta file is not correct")
@@ -164,25 +165,27 @@ if not os.path.exists(file_promoter):
 os.makedirs(os.path.dirname(backup_file_path), exist_ok=True)
 os.makedirs(os.path.dirname(file_name_tfbs_on_promoter), exist_ok=True)
 f = open(file_name_tfbs_on_promoter, 'a')
-f.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
+# f.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
 
 os.makedirs(os.path.dirname(file_name_tfbs_on_promoter_filltered), exist_ok=True)
-f_filltered = open(file_name_tfbs_on_promoter_filltered, 'w')
-f_filltered.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
+f_filltered = open(file_name_tfbs_on_promoter_filltered, 'a')
+# f_filltered.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
 
 os.makedirs(os.path.dirname(file_name_tfbs_on_promoter_CpG_island), exist_ok=True)
-f_CpG_island = open(file_name_tfbs_on_promoter_CpG_island, 'w')
-f_CpG_island.write('Promoter_id\tBegin\tEnd\tLength\tGC freq\tCpG ratio\tAT skew\tCG skew\tStart-p\tStrand\tStrand-p\n')
+f_CpG_island = open(file_name_tfbs_on_promoter_CpG_island, 'a')
+# f_CpG_island.write('Promoter_id\tBegin\tEnd\tLength\tGC freq\tCpG ratio\tAT skew\tCG skew\tStart-p\tStrand\tStrand-p\n')
 
 
 fasta_file = open(file_promoter, 'r')
 gene = fasta_file.read().split('>')[1:]
-for i in range(len(gene)):
+for i in range(6085,len(gene)):
 	gene[i] = gene[i].split('\n')
 	gene[i][0] = gene[i][0].split('|')
 	gene_name = gene[i][0][0]
 	seq = gene[i][1]
-	print(i, gene_name)
+	
+	time.sleep(2)
+	print(datetime.datetime.now(), i, gene_name, sep="\t")
 	table = PlantPAN2(gene_name, seq)
 	for data in table[0]:
 		for item in data:

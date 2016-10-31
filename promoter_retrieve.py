@@ -47,7 +47,7 @@ This script designed for retrieving promoter sequences.
 
 usage:
 $ python promoter_retrieve.py \\
-	--out_promoter <output_file.fa> \\
+	--output <output_file.fa> \\
 	--genome <genome.fa> \\
 	--gff <genome.gff> \\
 	--type <TLS/TSS> \\
@@ -83,7 +83,7 @@ parser.add_option("-a", "--all_gene", dest="all_gene",
 parser.add_option("-l", "--selected_gene_list", dest="gene_list",
 	default=None, metavar="FILE",
 	help="List of selecting genes for retrieving promoter in text file (is optional if do not selecting all genome)")
-parser.add_option("-r", "--remove_N_gap", dest="remove_N_gap",
+parser.add_option("-r", "--remove_n_gap", dest="remove_N_gap",
 	default='N', metavar="<Y/N>",
 	help="Remove N gap (Y/N)")
 parser.add_option("-m", "--min_length", dest="min_length",
