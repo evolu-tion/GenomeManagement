@@ -3,7 +3,7 @@
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.1d 2017-02-24
+Version: 1.1e 2017-02-24
 License: MIT License
 
 The MIT License
@@ -518,17 +518,17 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		forward_end_pos = self.getGeneForward(gene_name)
 		if(forward_end_pos != False):
 			if strand == '+':
-				if prom_start < forward_end_pos and prom_end < forward_end_pos:
+				if prom_start < forward_end_pos and prom_end > forward_end_pos:
 					prom_start = forward_end_pos + 1
 				elif prom_end == forward_end_pos:
 					prom_start = prom_end
 			elif strand == '-':
-				if prom_end > forward_end_pos + 1 and prom_start < forward_end_pos:
+				if prom_end > forward_end_pos - 1 and prom_start < forward_end_pos:
 					prom_end = forward_end_pos - 1
 				elif prom_start == forward_end_pos:
 					prom_end = prom_start
 
-		# Check promoter not contain poly N in the end of promoter [NNNNNNNNNNNNNATGGCAAATCGCCNNNN  --->   ATGGCAAATCGCCNNNN]
+		# Check promoter not contain poly N in the end of promoter [NNNNNNNNNNNNNatgATGGCAAATCGCCNNNN  --->   atgATGGCAAATCGCCNNNN]
 		# If length of promoter more than min_len is return currect postion, else return False (This gene not have promoter)
 		if (removed_N_gap == True):
 			sequence = Fasta_manager.getSequence(self, chromosome_name, prom_start, prom_end, strand)
@@ -609,7 +609,8 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
-			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len,removed_N_gap)
+			new_promoter_position = self.
+			(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len,removed_N_gap)
 			if(new_promoter_position==False):
 				self.list_of_gene_no_promoter.append(gene_name)
 				return ''
