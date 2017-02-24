@@ -533,7 +533,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		if (removed_N_gap == True):
 			sequence = Fasta_manager.getSequence(self, chromosome_name, prom_start, prom_end, strand)
 			if sequence[0] == 'N':
-				pos = re.search('[ATGC]+', sequence)
+				pos = re.search('[ATGCatgc]+', sequence)
 				if(pos != None):
 					seq = sequence[pos.start():]
 					if strand == '+' and len(seq)>=min_len:
