@@ -3,7 +3,7 @@
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.1c 2016-03-09
+Version: 1.1d 2017-02-24
 License: MIT License
 
 The MIT License
@@ -519,12 +519,12 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		if(forward_end_pos != False):
 			if strand == '+':
 				if prom_start < forward_end_pos and prom_end < forward_end_pos:
-					prom_start = forward_end_pos - 1
+					prom_start = forward_end_pos + 1
 				elif prom_end == forward_end_pos:
 					prom_start = prom_end
 			elif strand == '-':
 				if prom_end > forward_end_pos + 1 and prom_start < forward_end_pos:
-					prom_end = forward_end_pos + 1
+					prom_end = forward_end_pos - 1
 				elif prom_start == forward_end_pos:
 					prom_end = prom_start
 
