@@ -609,8 +609,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = gene_struc_table[0][4] - downstream + 1
 				promoter_end = gene_struc_table[0][4] + upstream
 
-			new_promoter_position = self.
-			(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len,removed_N_gap)
+			new_promoter_position = self.check_correct_position(chromosome, gene_name, promoter_start, promoter_end, strand, promoter_min_len,removed_N_gap)
 			if(new_promoter_position==False):
 				self.list_of_gene_no_promoter.append(gene_name)
 				return ''
