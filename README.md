@@ -8,6 +8,7 @@ Then run python script by used command line on windows or unix::
 
     python promoter_retrieve.py \
 		--output <output_file.fa> \
+		--output_format <fasta/gff> \
 		--genome <genome.fa> \
 		--gff <genome.gff> \
 		--type <TLS/TSS> \
