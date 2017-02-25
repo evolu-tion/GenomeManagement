@@ -175,7 +175,7 @@ def main():
 	os.makedirs(os.path.dirname(output_file_list_no_promoter), exist_ok=True)
 	out_promoter = open(output_file_promoter, 'w')
 
-	if(options.all_gene.upper() == 'N' or options.all_gene.upper == 'NO'):
+	if(options.all_gene.upper() == 'N' or options.all_gene.upper() == 'NO'):
 		custom_gene_list = open(file_custom_list_of_gene).read().splitlines()
 		
 		# Check gene list in genomes
