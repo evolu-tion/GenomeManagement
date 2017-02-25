@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+
 """ 
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.1f 2017-02-25
+Version: 1.3 2017-02-25
 License: MIT License
 
 The MIT License
@@ -28,7 +29,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. 
 """
-
+version = "GenomeManagement_v1.3"
 
 import re
 import gzip
@@ -105,13 +106,16 @@ class Fasta_manager(object):
 		GC = sequence.count('G') + sequence.count('C') + sequence.count('g') + sequence.count('c')
 		AT = sequence.count('A') + sequence.count('T') + sequence.count('a') + sequence.count('t')
 		return float(GC) * 100 / (AT + GC)
+
 	def getGC(self, sequence):
 		return sequence.count('G') + sequence.count('C') + sequence.count('g') + sequence.count('c')
+
 	def getStatisticSequence(self, sequence):
 		GC = sequence.count('G') + sequence.count('C') + sequence.count('g') + sequence.count('c')
 		AT = sequence.count('A') + sequence.count('T') + sequence.count('a') + sequence.count('t')
 		N = sequence.count('N') + sequence.count('n')
 		return [len(sequence), GC, AT, N, float(GC) * 100 / (AT + GC)]
+
 	def getStatisticSeqFromGenome(self, chromosome, start, end, strand):
 		seqLength = self.getChromosomeLength(chromosome)
 		if (start > 0 and start < seqLength + 1 and end < seqLength + 1):
@@ -126,8 +130,10 @@ class Fasta_manager(object):
 			print("chromosome", chromosome, "length:", seqLength)
 			print("gene position:", start, "to", end, "on", strand, "strand")
 			exit()
+
 	def getChromosomeLength(self, chromosome_name):
 		return self.chromosomeLength[chromosome_name]
+
 	def getSequence(self, chromosome, start, end, strand):
 		if self.checkChromosome(chromosome, start, end):
 			seqLength = self.getChromosomeLength(chromosome)
@@ -168,6 +174,7 @@ class Fasta_manager(object):
 			else:
 				new = new + base
 		return new
+
 	def searchSeqInChromosome(self, chromosome_name, pattern):
 		pattern = pattern.upper()
 		len_pattern = len(pattern)
@@ -185,6 +192,7 @@ class Fasta_manager(object):
 			index = self.chromosomeSeq[chromosome_name].find(pattern, index + 1)
 		# Return [fistMatch,endMatch,strand]
 		return index_found
+
 	def searchSeqInGenome(self, pattern):
 		pattern = pattern.upper()
 		len_pattern = len(pattern)
@@ -247,34 +255,41 @@ class Gff_manager(object):
 
 	def getNumgerOfGffLine(self):
 		return len(self.data)
+
 	def getTable(self):
 		return self.data
+
 	def getTableSpecificType(self, gene_struc_type):
 		table = []
 		for line in self.data:
 			if(line[2] == gene_struc_type):
 				table.append(line)
 		return table
+
 	def getTableSpecificTypeAndStrand(self, gene_struc_type, strand):
 		table = []
 		for line in self.data:
 			if(line[2] == gene_struc_type and line[6]==strand):
 				table.append(line)
 		return table
+
 	def printdata(self,type="five_prime_UTR"):
 		countLine = 0
 		for line in self.data:
 			if(line[2] == 'five_prime_UTR'):
 				print(line[0] + "\t" + line[2] + "\t" + str(line[3]) + "\t" + str(line[4]) + "\t" + line[6] + "\t" + line[8][0])
 				countLine += 1
+
 	def getTableDataOfGeneAndType(self, geneName,Type):
 		table = []
 		for i in self.gene_struc[geneName]:
 			if(i[2]==Type):
 				table.append(i)
 		return table
+
 	def getTableDataOfGene(self, geneName):
 		return self.gene_struc[geneName]
+
 	def getTranscripthave5UTR(self):
 		print("gene", "transcript", "label5UTR", "lengthOf5UTR", "strand", "start", "stop", sep='\t')
 		for line in self.data:
@@ -288,23 +303,28 @@ class Gff_manager(object):
 				len5UTR = stop5UTR - start5UTR + 1
 				strand = line[6]
 				print(geneName, transcriptName, label5UTR, len5UTR, strand, start5UTR, stop5UTR, sep='\t')
+
 	def getGeneList(self):
 		return sorted(list(self.gene_struc.keys()))
+
 	def getDataSpecificType(self,gene_component):
 		table = []
 		for line in self.data:
 			if(line[2] == gene_component):
 				table.append(line)
 		return table
+
 	def getTranscript(self):
 		for line in self.data:
 			if(line[2] == 'mRNA'):
 				print(line[8][0][3:])
+
 	def checkGene(self, gene_name):
 		if gene_name in list(self.gene_struc.keys()):
 			return True
 		else:
 			return False
+
 	def getGeneForward(self,gene_name):
 		# return end position of forward gene, if don't have forward gene return False
 		x = self.gene_struc[gene_name]
@@ -339,8 +359,10 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		Fasta_manager.__init__(self, fastaFile)
 		Gff_manager.__init__(self, GffFile)
 		self.list_of_gene_no_promoter = []
+
 	def getListOfGeneNoPromoter(self):
 		return self.list_of_gene_no_promoter
+
 	def getGCcontentInTranscript(self, type):
 		sumGC = 0
 		sumAT = 0
@@ -352,6 +374,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				sumGC += statistic[1]
 				sumAT += statistic[2]
 		print("Summary GC content in", type, ":", float(sumGC) * 100 / (sumGC + sumAT))
+
 	def selectedTSSProtein(self, upstream, downstream):
 		file_write = open("%s_upstream_-%dto+%d.fa" % (self.fastaFile[:-6], upstream, downstream), 'w')
 		statistic_of_5_prime_length = []
@@ -441,6 +464,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		print("Upstream correct:", count_seq)
 		print("Upstream out of criteria:", count_upstream_out_of_criteria)
 		# Number of 5'UTR of selected transcript
+
 	def getPromoterOfGene(self, upstream, downstream, five_prime_UTR):
 		if(five_prime_UTR[6] == '+'):
 			seq = Fasta_manager.getSequence(self, five_prime_UTR[0], five_prime_UTR[3] - upstream, five_prime_UTR[3] + downstream, five_prime_UTR[6])
@@ -463,7 +487,8 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				 # print(text)
 				return text
 			else:
-				return False		
+				return False	
+
 	def getAllPromoterKnownTSS(self, upstream, downstream):
 		# Retrive upstream and downstream sequence from TSS
 		not_selected = 0
@@ -499,6 +524,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		print("not selected sequence:", not_selected)
 		print("not selected sequence because N:", not_selected_polyN)
 		print("It including ", count_seq, "sequences for next step")
+
 	def check_correct_position(self, chromosome_name, gene_name, prom_start, prom_end, strand, min_len, removed_N_gap):
 		# Return False when postion of promoter is not correct, if promoter region is correct, it return promoter old postion or correct position
 		
@@ -559,7 +585,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 			else:
 				return False
 
-	def getPromoterOfGeneFromTLS(self, gene_name, upstream, downstream, promoter_min_len, removed_N_gap):
+	def getPromoterOfGeneFromTLS(self, gene_name, upstream, downstream, promoter_min_len, removed_N_gap, output_format):
 		gene_struc_table = Gff_manager.getTableDataOfGeneAndType(self, gene_name, "CDS")
 		if(len(gene_struc_table)==0):
 			print("Gene name is not currect, please check it again")
@@ -583,16 +609,24 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = new_promoter_position['promoter_start']
 				promoter_end = new_promoter_position['promoter_end']
 				seq = Fasta_manager.getSequence(self, chromosome, promoter_start, promoter_end, strand)
-				text = ">"+ gene_name+"_promoter|" +chromosome+ "|" +str(promoter_start) +"|" +str(promoter_end) +"|"+strand+"|length="+ str(promoter_end-promoter_start+1)+ "|from CDS\n"
-				text = text + seq + "\n"
+
+				if (output_format.lower() == 'fasta' or output_format.lower() == 'fa'): 
+					# Fasta writing
+					text = ">" + gene_name + "_promoter|" + chromosome + "|" + str(promoter_start) + "|" + str(promoter_end) + "|" + strand + "|length=" + str(promoter_end - promoter_start + 1) + "|Promoter from CDS|" + version + "\n"
+					text = text + seq + "\n"
+				elif (output_format.lower() == 'gff' or output_format.lower() == 'gff3'):
+					# GFF writing
+					text = chromosome + "\t" + version + "\t" + "promoter" + "\t" + str(promoter_start) + "\t" + str(promoter_end) + "\t.\t" + strand + "\t.\t" + "ID=" + gene_name + "_promoter;Name=" + gene_name + ";length=" + str(promoter_end-promoter_start+1) + "\n"
 				return text
-	def getAllPromoterOfGeneFromTLS(self, upstream, downstream, promoter_min_len, removed_N_gap):
+
+	def getAllPromoterOfGeneFromTLS(self, upstream, downstream, promoter_min_len, removed_N_gap, output_format):
 		for gene_name in Gff_manager.getGeneList(self):
-			self.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_min_len, removed_N_gap)
+			self.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_min_len, removed_N_gap, output_format)
 		print("\n-----------List of gene no promoter-----------")
 		for gene_name in self.list_of_gene_no_promoter:
 			print(gene_name)
-	def getPromoterOfGeneFromTSS(self, gene_name, upstream, downstream, promoter_min_len, removed_N_gap):
+
+	def getPromoterOfGeneFromTSS(self, gene_name, upstream, downstream, promoter_min_len, removed_N_gap, output_format):
 		gene_struc_table = Gff_manager.getTableDataOfGeneAndType(self, gene_name, "five_prime_UTR")
 		if(len(gene_struc_table)==0):
 			#print("No information of 5'UTR of gene", gene_name)
@@ -617,15 +651,18 @@ class Genome_manager(Fasta_manager, Gff_manager):
 				promoter_start = new_promoter_position['promoter_start']
 				promoter_end = new_promoter_position['promoter_end']
 				seq = Fasta_manager.getSequence(self, chromosome, promoter_start, promoter_end, strand)
-				text = ">"+ gene_name+"_promoter|" +chromosome+ "|" +str(promoter_start) +"|" +str(promoter_end) +"|"+strand+"|length="+ str(promoter_end-promoter_start+1)+ "|from 5'UTR\n"
-				text = text + seq + "\n"
+				
+				if (output_format.lower() == 'fasta' or output_format.lower() == 'fa'): 
+					# Fasta writing
+					text = ">" + gene_name + "_promoter|" + chromosome + "|" + str(promoter_start) + "|" + str(promoter_end) + "|" + strand + "|length=" + str(promoter_end - promoter_start + 1) + "|Promoter from 5'UTR|" + version + "\n"
+					text = text + seq + "\n"
+				elif (output_format.lower() == 'gff' or output_format.lower() == 'gff3'):
+					text = chromosome + "\t" + version + "\t" + "promoter" + "\t" + str(promoter_start) + "\t" + str(promoter_end) + "\t.\t" + strand + "\t.\t" + "ID=" + gene_name + "_promoter;Name=" + gene_name + ";length=" + str(promoter_end-promoter_start+1) +"\n"
 				return text
-				# print(">", gene_name,"_promoter|",chromosome, "|",promoter_start,"|",promoter_end,"|",strand,"|length=", promoter_end-promoter_start+1, "|from 5'UTR", sep="")
-				# print(seq)
 
-	def getAllPromoterOfGeneFromTSS(self, upstream, downstream, promoter_min_len, removed_N_gap):
+	def getAllPromoterOfGeneFromTSS(self, upstream, downstream, promoter_min_len, removed_N_gap, output_format):
 		for gene_name in Gff_manager.getGeneList(self):
-			self.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_min_len, removed_N_gap)
+			self.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_min_len, removed_N_gap, output_format)
 			
 		print("\n-----------List of gene no promoter-----------")
 		for gene_name in self.list_of_gene_no_promoter:
