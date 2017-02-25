@@ -158,7 +158,7 @@ from seq_manage import Genome_manager
 
 
 def main():
-	if all_promoter_in_genome == 'N' and not os.path.exists(file_custom_list_of_gene):
+	if (options.all_gene.upper() == 'N' or options.all_gene.upper == 'NO') and not os.path.exists(file_custom_list_of_gene):
 		print("Location of list of genes is not correct")
 		exit()
 	
@@ -175,7 +175,7 @@ def main():
 	os.makedirs(os.path.dirname(output_file_list_no_promoter), exist_ok=True)
 	out_promoter = open(output_file_promoter, 'w')
 
-	if(all_promoter_in_genome == 'N' or all_promoter_in_genome == 'n'):
+	if(options.all_gene.upper() == 'N' or options.all_gene.upper == 'NO'):
 		custom_gene_list = open(file_custom_list_of_gene).read().splitlines()
 		
 		# Check gene list in genomes
