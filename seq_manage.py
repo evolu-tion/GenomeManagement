@@ -518,7 +518,7 @@ class Genome_manager(Fasta_manager, Gff_manager):
 		forward_end_pos = self.getGeneForward(gene_name)
 		if(forward_end_pos != False):
 			if strand == '+':
-				if prom_start < forward_end_pos and prom_end > forward_end_pos:
+				if prom_start < forward_end_pos +1 and prom_end > forward_end_pos:
 					prom_start = forward_end_pos + 1
 				elif prom_end == forward_end_pos:
 					prom_start = prom_end
