@@ -4,7 +4,7 @@
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.2 2016-09-22
+Version: 1.3 2017-02-25
 License: MIT License
 
 The MIT License
@@ -29,14 +29,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. 
 """
+version = "GenomeManagement_v1.3"
 
 import os
 import sys
 from optparse import OptionParser
 
-if "--version" in sys.argv[1:]:
+if "--version" in sys.argv[1:] or "-v" in sys.argv[1:]:
 	# TODO - Capture version of Select_representative_miRNA
-	print("Promoter retrived version 1.2")
+	print(version)
 	sys.exit(0)
 
 # Parse Command Line
@@ -47,7 +48,8 @@ This script designed for retrieving promoter sequences.
 
 usage:
 $ python promoter_retrieve.py \\
-	--output <output_file.fa> \\
+	--output <output_file> \\
+	--output_format <fasta/gff> \\
 	--genome <genome.fa> \\
 	--gff <genome.gff> \\
 	--type <TLS/TSS> \\
@@ -61,7 +63,10 @@ $ python promoter_retrieve.py \\
 parser = OptionParser(usage=usage)
 parser.add_option("-o", "--output", dest="file_output",
 	default=None, metavar="FILE",
-	help="Output fasta file name")
+	help="Output file name")
+parser.add_option("-p", "--output_format", dest="output_format",
+	default=None, metavar="<fasta/fa/FASTA/GFF/gff/GFF3/gff3>",
+	help="Output file format")
 parser.add_option("-g", "--genome", dest="file_genome_seq",
 	default=None, metavar="FILE",
 	help="Input FASTA of genome sequence file")
@@ -92,7 +97,9 @@ parser.add_option("-m", "--min_length", dest="min_length",
 options,args = parser.parse_args()
 
 if not options.file_output:
-	sys.exit("Missing output fasta file, -o <FILE> or --output=<FILE>")
+	sys.exit("Missing output file, -o <FILE> or --output=<FILE>")
+if not options.output_format:
+	sys.exit("Missing output format file, -p <fasta/gff> or --output_format=<fasta/gff>")
 if not options.file_genome_seq or not os.path.exists(options.file_genome_seq):
 	sys.exit("Missing FASTA of genome sequence file, -g <FILE> or --genome=<FILE>")
 if not options.file_gff or not os.path.exists(options.file_gff):
@@ -134,6 +141,7 @@ removed_N_gap_begins_promoter = options.remove_N_gap
 # 1) Promoter sequences
 # 2) List of genes cannot retrieved promoters
 output_file_promoter = options.file_output
+output_format = options.output_format
 output_file_list_no_promoter = options.file_output + '_list_no_promoter.txt'
 
 ##################################################################################################
@@ -186,11 +194,11 @@ def main():
 		if(start_promoter_from == 'TLS'):
 			for gene_name in custom_gene_list:
 				print("Finding promoter from TLS of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
+				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap, output_format))
 		elif(start_promoter_from == 'TSS'):
 			for gene_name in custom_gene_list:
 				print("Finding promoter from TSS  of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
+				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap, output_format))
 	else:
 
 		# Finding promoter of all genes in genome
@@ -200,11 +208,11 @@ def main():
 		if(start_promoter_from == 'TLS'):
 			for gene_name in genome.getGeneList():
 				print("Finding promoter from TLS  of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
+				out_promoter.write(genome.getPromoterOfGeneFromTLS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap, output_format))
 		elif(start_promoter_from == 'TSS'):
 			for gene_name in genome.getGeneList():
 				print("Finding promoter from TSS  of ", gene_name)
-				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap))
+				out_promoter.write(genome.getPromoterOfGeneFromTSS(gene_name, upstream, downstream, promoter_minimum_length, removed_N_gap, output_format))
 
 	print("Write list of gene no promoter")
 	error_promoter = open(output_file_list_no_promoter, 'w')
