@@ -213,9 +213,9 @@ class Fasta_manager(object):
 
 class Gff_manager(object):
 	def __init__(self, file_name):
-		self.data = []
-		self.gene_struc = {}
-		self.chromosome_contain_gene = {} # {[(chr1,'+')] = [..........]}
+		self.data = [] # all line
+		self.gene_struc = {} # {'gene1': [line1 ,line2, line 3]}
+		self.chromosome_contain_gene = {} # {[(chr1,'+')]: [..........]}
 
 		gene_name = ""
 		if(file_name.find('.gz') > 0):
@@ -243,7 +243,7 @@ class Gff_manager(object):
 		self.gene_struc[gene_name] = gene_annotation
 
 		table = self.getTableSpecificType("gene")
-		table = sorted(table, key=itemgetter(0,6,4,3))
+		table = sorted(table, key=itemgetter(0,6,3,4))
 		for line in table:
 			if (line[0],line[6]) in self.chromosome_contain_gene:
 				self.chromosome_contain_gene[(line[0],line[6])].append(line)
@@ -251,7 +251,7 @@ class Gff_manager(object):
 				self.chromosome_contain_gene[(line[0],line[6])]=[line]
 		for key, value in self.chromosome_contain_gene.items():
 			if (key[1] == '-'):
-				self.chromosome_contain_gene[key] = sorted(value, key=itemgetter(3,4), reverse=True)
+				self.chromosome_contain_gene[key] = sorted(value, key=itemgetter(4,3), reverse=True)
 
 	def getNumgerOfGffLine(self):
 		return len(self.data)
@@ -276,7 +276,7 @@ class Gff_manager(object):
 	def printdata(self,type="five_prime_UTR"):
 		countLine = 0
 		for line in self.data:
-			if(line[2] == 'five_prime_UTR'):
+			if(line[2] == type):
 				print(line[0] + "\t" + line[2] + "\t" + str(line[3]) + "\t" + str(line[4]) + "\t" + line[6] + "\t" + line[8][0])
 				countLine += 1
 
@@ -333,10 +333,10 @@ class Gff_manager(object):
 		start=x[0][3]
 		end=x[0][4]
 		table_gene = self.chromosome_contain_gene[(chromosome, strand)]
-		
+	
 		if(strand=="+"):
 			i=0
-			while(i < len(table_gene) and table_gene[i][4] < start and table_gene[i][3] < start):
+			while(i < len(table_gene) and table_gene[i][3] < start):
 				i=i+1
 			i=i-1
 			if(i==-1):
@@ -345,7 +345,7 @@ class Gff_manager(object):
 				return table_gene[i][4]
 		else:
 			i=0
-			while(i < len(table_gene) and end < table_gene[i][4] and end < table_gene[i][3]):
+			while(i < len(table_gene) and end < table_gene[i][4]):
 				i=i+1
 			i=i-1
 			if(i==-1):
@@ -548,11 +548,15 @@ class Genome_manager(Fasta_manager, Gff_manager):
 					prom_start = forward_end_pos + 1
 				elif prom_end == forward_end_pos:
 					prom_start = prom_end
+				elif prom_end < forward_end_pos:
+					return False
 			elif strand == '-':
 				if prom_end > forward_end_pos - 1 and prom_start < forward_end_pos:
 					prom_end = forward_end_pos - 1
 				elif prom_start == forward_end_pos:
 					prom_end = prom_start
+				elif prom_start > forward_end_pos:
+					return False
 
 		# Check promoter not contain poly N in the end of promoter [NNNNNNNNNNNNNatgATGGCAAATCGCCNNNN  --->   atgATGGCAAATCGCCNNNN]
 		# If length of promoter more than min_len is return currect postion, else return False (This gene not have promoter)
