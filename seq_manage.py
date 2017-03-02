@@ -4,7 +4,7 @@
 Copyright (c) 2016 King Mongkut's University technology Thonburi
 Author: Nattawet Sriwichai
 Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.3 2017-02-25
+Version: 1.3b 2017-03-01
 License: MIT License
 
 The MIT License
@@ -29,7 +29,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. 
 """
-version = "GenomeManagement_v1.3"
+version = "GenomeManagement_v1.3b"
 
 import re
 import gzip
@@ -235,11 +235,11 @@ class Gff_manager(object):
 					gene_annotation.append(line)
 				else:
 					if(gene_name != ''):
-						gene_annotation = sorted(gene_annotation,key=itemgetter(4,5))
+						# gene_annotation = sorted(gene_annotation,key=itemgetter(3,4))
 						self.gene_struc[gene_name] = gene_annotation
 					gene_annotation = [line]
 					gene_name = line[8][1][5:]
-		gene_annotation = sorted(gene_annotation,key=itemgetter(4,5))
+		# gene_annotation = sorted(gene_annotation,key=itemgetter(3,4))
 		self.gene_struc[gene_name] = gene_annotation
 
 		table = self.getTableSpecificType("gene")
@@ -328,6 +328,8 @@ class Gff_manager(object):
 	def getGeneForward(self,gene_name):
 		# return end position of forward gene, if don't have forward gene return False
 		x = self.gene_struc[gene_name]
+		# for i in self.gene_struc[gene_name]:
+		# 	print(i)
 		chromosome = x[0][0]
 		strand = x[0][6]
 		start=x[0][3]
@@ -351,6 +353,8 @@ class Gff_manager(object):
 			if(i==-1):
 				return False
 			else:
+				# print(gene_name, strand, start, end)
+				# print(table_gene[i])
 				return table_gene[i][3]	
 
 class Genome_manager(Fasta_manager, Gff_manager):
