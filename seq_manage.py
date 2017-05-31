@@ -80,14 +80,7 @@ class Fasta_manager(object):
 			print("ATGC count  = ", sumGC + sumAT)
 			print("N content  = ", sumN/sumLength)
 
-	def checkChromosome(self, chromosome):
-		if(chromosome in self.chromosomeLength):
-			return True 
-		else:
-			print("Not found "+chromosome+" ,please check chromosome again!!!")
-			return False
-
-	def checkChromosome(self, chromosome, start, end):
+	def checkChromosome(self, chromosome, start=0, end=1):
 		if(start>end):
 			print("Error: checkChromosome(chromosome, start, end) of", chromosome, "[" , start, "-", end ,"], the start position should be less than end")
 			return False
@@ -151,6 +144,8 @@ class Fasta_manager(object):
 				print("Error command: getSequence(", chromosome, start, end, strand, ")", sep=', ')
 		else:
 			return ""
+	def getSequence(self, chromosome):
+		return self.chromosomeSeq[chromosome]
 
 	def complementary(self, seq):
 		new = ""
