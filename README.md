@@ -6,7 +6,7 @@ All rights reserved. See the licence text below.
 # Usage: Promoter of genes retrieving
 Then run python script by used command line on windows or unix::
 
-    python promoter_retrieve.py \
+    python3 promoter_retrieve.py \
 		--output <output_file.fa> \
 		--output_format <fasta/gff> \
 		--genome <genome.fa> \
@@ -18,6 +18,12 @@ Then run python script by used command line on windows or unix::
 		--selected_gene_list <gene_list.txt, is optional if all_gene is N> \
 		--remove_n_gap <Y/N> \
 		--min_length <default is 100 bp>
+
+# Usage: Protein or gene retrieving
+	python3 proteins_retrieve.py \
+		--input <input_fasta_file> \
+		--list_of_interest <list_of_protein_id.txt> \
+		--output <output_file.fa>
 
 # Licence (MIT)
 Copyright (c) 2016 King Mongkut's University technology Thonburi
