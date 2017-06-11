@@ -12,6 +12,8 @@ version = "GenomeManagement_v1.3"
 import os
 import sys
 from optparse import OptionParser
+from seq_manage import Fasta_manager
+
 
 if "--version" in sys.argv[1:] or "-v" in sys.argv[1:]:
 	# TODO - Capture version of Select_representative_miRNA
@@ -58,22 +60,28 @@ file_protein_seq = options.file_protein_seq
 # 1) Protein sequence on list of protein
 
 ##################################### Python Main Program ########################################
-import os
-import sys
-from seq_manage import Fasta_manager
 
 def main():
-	protein = Fasta_manager("genome/Athaliana_167_TAIR10.protein.fa")
+	protein = Fasta_manager(file_protein_seq)
 	custom_gene_list = open(list_of_interest).read().splitlines()
 	output_file = open(file_output, 'w')
 
 	# FInding promoter on custom list
-	for protein_id in custom_gene_list:
+	for each_gene in custom_gene_list:
+		if len(each_gene.split()) > 0:
+			protein_id = each_gene.split()[0]
+			protein_symbol = each_gene.split()[1]
+		else:
+			protein_id = each_gene
+
 		if protein.checkChromosome(protein_id):
 			print("Found protein:", protein_id)
 			sequence = protein.getSequence(protein_id)
 			# print(">" + protein_id + "\n" + sequence + "\n")
-			output_file.write(">" + protein_id + "\n" + sequence + "\n")
+			if len(each_gene.split()) > 0:
+				output_file.write(">" + protein_id + " "+ protein_symbol + "\n" + sequence + "\n")
+			else:
+				output_file.write(">" + protein_id + "\n" + sequence + "\n")
 		else:
 			print(protein_id, "did not found protein reference file")
 
