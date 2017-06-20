@@ -144,7 +144,7 @@ class Fasta_manager(object):
 				print("Error command: getSequence(", chromosome, start, end, strand, ")", sep=', ')
 		else:
 			return ""
-	def getSequence(self, chromosome):
+	def getChrSequence(self, chromosome):
 		return self.chromosomeSeq[chromosome]
 
 	def complementary(self, seq):

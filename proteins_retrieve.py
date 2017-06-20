@@ -63,12 +63,13 @@ file_protein_seq = options.file_protein_seq
 
 def main():
 	protein = Fasta_manager(file_protein_seq)
-	custom_gene_list = open(list_of_interest).read().splitlines()
+	custom_gene_list = open(list_of_interest, 'r')
 	output_file = open(file_output, 'w')
 
 	# FInding promoter on custom list
 	for each_gene in custom_gene_list:
-		if len(each_gene.split()) > 0:
+		print(each_gene)
+		if len(each_gene.split()) > 1:
 			protein_id = each_gene.split()[0]
 			protein_symbol = each_gene.split()[1]
 		else:
@@ -76,14 +77,14 @@ def main():
 
 		if protein.checkChromosome(protein_id):
 			print("Found protein:", protein_id)
-			sequence = protein.getSequence(protein_id)
+			sequence = protein.getChrSequence(protein_id)
 			# print(">" + protein_id + "\n" + sequence + "\n")
-			if len(each_gene.split()) > 0:
+			if len(each_gene.split()) > 1:
 				output_file.write(">" + protein_id + " "+ protein_symbol + "\n" + sequence + "\n")
 			else:
 				output_file.write(">" + protein_id + "\n" + sequence + "\n")
 		else:
 			print(protein_id, "did not found protein reference file")
+	output_file.close()
 
-if __name__ == "__main__":
-    main()
+main()
