@@ -36,26 +36,26 @@ from optparse import OptionParser
 
 if "--version" in sys.argv[1:]:
 	# TODO - Capture version of Select_representative_miRNA
-	print("memeXml2bam version 1.0")
+	print("memeXml2bed version 1.0")
 	sys.exit(0)
 
 # Parse Command Line
 usage = """
 
 Description:
-This script designed for convert MEME output to BAM.
+This script designed for convert MEME output to BED.
 
 usage:
-$ python3 memeXml2bam.py \\
-	--output <out.bam> \\
+$ python3 memeXml2bed.py \\
+	--output <out.bed> \\
 	--input <meme.xml> \\
 	--pvalue <1e-2> \\
 """
 
 parser = OptionParser(usage=usage)
 parser.add_option("-o", "--output", dest="file_output",
-	default='meme.bam', metavar="FILE",
-	help="Output file name of BAM, default is meme.out")
+	default='meme.bed', metavar="FILE",
+	help="Output file name of BED, default is meme.out")
 parser.add_option("-i", "--input", dest="file_xml",
 	default='meme.xml', metavar="FILE",
 	help="Input XML file from MEME, default is meme.xml")
@@ -69,7 +69,7 @@ file_xml = options.file_xml
 pvalue = float(options.pvalue)
 
 if not options.file_output:
-	sys.exit("Missing output BAM file, -o <FILE> or --output=<FILE>")
+	sys.exit("Missing output BED file, -o <FILE> or --output=<FILE>")
 if not options.file_xml or not os.path.exists(options.file_xml):
 	sys.exit("Missing input XML file from MEME, -i <FILE> or --input=<FILE>")
 
