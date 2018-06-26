@@ -27,7 +27,7 @@ Description:
 This script designed for retrieving promoter sequences.
 
 usage:
-$ python promoter_retrieve.py \\
+$ python proteins_retrieve.py \\
 	--input <protein.fa> \\
 	--list_of_interest <protein_list.txt> \\
 	--output <output_file> \\
