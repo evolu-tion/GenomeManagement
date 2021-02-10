@@ -56,7 +56,7 @@ $ python promoter_retrieve.py \\
 	--upstream <bp> \\
 	--downstream <bp> \\
 	--all_gene <Y/N> \\
-	--list_of_interest <gene_list.txt> \\
+	--selected_gene_list <gene_list.txt> \\
 	--remove_n_gap <Y/N>
 """
 
