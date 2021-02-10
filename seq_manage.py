@@ -75,10 +75,10 @@ class Fasta_manager(object):
 				self.chromosomeStatistics[header] = [length, GC, AT, N]
 				# print(header ,length, GC, AT, N, sep='\t')
 		if show_genome_stat:
-			print("summary" ,sumLength, sumGC, sumAT, sumN, sep='\t')
-			print("GC content = ", float(sumGC) / (sumAT+sumGC))
-			print("ATGC count  = ", sumGC + sumAT)
-			print("N content  = ", sumN/sumLength)
+			print("Genome size" , "{:0,.0f}".format(sumLength) , "bps (wtih contains", "{:0,.0f}".format(sumN), "N gaps)")
+                        print("Number of chromosomes/scaffolds/contigs = ", "{:0,.0f}".format(len(fasta)))
+                        print("GC content = ", "{:0,.2f}".format(float(sumGC) / (sumAT+sumGC)))
+                        print("N content  = ", "{:0,.2f}".format(sumN/sumLength))
 
 	def checkChromosome(self, chromosome, start=0, end=1):
 		if(start>end):
