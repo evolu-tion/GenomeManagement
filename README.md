@@ -26,7 +26,7 @@ Then run python script by used command line on windows or unix::
 		--output <output_file.fa>
 
 # Usage: Get genome statistic
-	python3 get_genome_statistic.py \\
+	python3 get_genome_statistic.py \
 		--genome <genome.fa>
 
 # Licence (MIT)
