@@ -19,11 +19,15 @@ Then run python script by used command line on windows or unix::
 		--remove_n_gap <Y/N> \
 		--min_length <default is 100 bp>
 
-# Usage: Protein or gene retrieving
+# Usage: Get protein or gene sequences from genome
 	python3 proteins_retrieve.py \
 		--input <input_fasta_file> \
 		--list_of_interest <list_of_protein_id.txt> \
 		--output <output_file.fa>
+
+# Usage: Get genome statistic
+	python3 get_genome_statistic.py \\
+		--genome <genome.fa>
 
 # Licence (MIT)
 Copyright (c) 2016 King Mongkut's University technology Thonburi
