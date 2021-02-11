@@ -44,7 +44,11 @@ class Fasta_manager(object):
 		self.chromosomeLength = {}
 		self.chromosomeSeq = {}
 		self.chromosomeStatistics = {}  # Length, GC, AT, N
-		sumGC = sumAT = sumN = sumLength = 0
+		count_bases = {'A': 0, 'T':0, 'C':0, 'G':0, 
+										'R':0, 'S':0, 'W':0, 'K':0, 
+										'M':0, 'B':0, 'D':0, 'H':0, 
+										'V':0, 'Y':0, 'N': 0
+		}
 		
 		if(fastaFile.find('.gz') > 0):
 			filegz = gzip.open(fastaFile, 'rb')
@@ -64,23 +68,18 @@ class Fasta_manager(object):
 			self.chromosomeSeq[header] = sequence
 			self.chromosomeLength[header] = length
 
-			if show_genome_stat: 
-				GC = sequence.count('G')+sequence.count('C')+sequence.count('g')+sequence.count('c')
-				AT = sequence.count('A')+sequence.count('T')+sequence.count('a')+sequence.count('t')
-				N = sequence.count('N')+sequence.count('n')
-				sumGC += GC
-				sumAT += AT
-				sumN += N
-				sumLength += length
-				self.chromosomeStatistics[header] = [length, GC, AT, N]
-				# print(header ,length, GC, AT, N, sep='\t')
 		if show_genome_stat:
-			print("Total sequence length:" , "{:0,.0f}".format(sumLength))
-			print("Total ungapped length:" , "{:0,.0f}".format(sumLength-sumN))
-			print("Total spanned gaps:", "{:0,.0f}".format(sumN))
-			print("Number of chromosomes/scaffolds/contigs = ", "{:0,.0f}".format(len(fasta)))
-			print("GC content (%):", "{:0,.2f}".format(sumGC * 100 / (sumAT+sumGC)))
-			print("N content  (%)", "{:0,.2f}".format(sumN * 100 / sumLength))
+      for i in sequence:
+        i = i.upper()
+        count_bases[i] += 1
+			print("Total sequence length:" , "{:0,}".format(sum(count_bases.values())))
+			print("Total ungapped length:" , "{:0,}".format(sum(count_bases.values()) - count_bases['N']))
+			print("Total spanned gaps:", "{:0,}".format(count_bases['N']))
+			print("Number of chromosomes/scaffolds/contigs = ", "{:0,}".format(len(fasta)))
+
+			sumGC = count_bases['G'] + count_bases['C'] + count_bases['S'] + count_bases['Y']/2 + count_bases['K']/2 + count_bases['M']/2 + count_bases['B']*2/3 + count_bases['D']/3 + count_bases['H']/3 + count_bases['V']*2/3 + count_bases['N']/2
+			print("GC content (%):", "{:0,.2f}".format(sumGC * 100 / sum(count_bases.values())))
+			print("N content  (%)", "{:0,.2f}".format(count_bases['N'] * 100 / sum(count_bases.values())))
 			scaffold_len = sorted(self.chromosomeLength.values(), reverse=True)
 			half_sum_len = sum(scaffold_len)/2
 
