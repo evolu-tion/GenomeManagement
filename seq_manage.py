@@ -75,10 +75,23 @@ class Fasta_manager(object):
 				self.chromosomeStatistics[header] = [length, GC, AT, N]
 				# print(header ,length, GC, AT, N, sep='\t')
 		if show_genome_stat:
-			print("Genome size" , "{:0,.0f}".format(sumLength) , "bps (wtih contains", "{:0,.0f}".format(sumN), "N gaps)")
-                        print("Number of chromosomes/scaffolds/contigs = ", "{:0,.0f}".format(len(fasta)))
-                        print("GC content = ", "{:0,.2f}".format(float(sumGC) / (sumAT+sumGC)))
-                        print("N content  = ", "{:0,.2f}".format(sumN/sumLength))
+			print("Total sequence length:" , "{:0,.0f}".format(sumLength))
+			print("Total ungapped length:" , "{:0,.0f}".format(sumLength-sumN))
+			print("Total spanned gaps:", "{:0,.0f}".format(sumN))
+			print("Number of chromosomes/scaffolds/contigs = ", "{:0,.0f}".format(len(fasta)))
+			print("GC content (%):", "{:0,.2f}".format(sumGC * 100 / (sumAT+sumGC)))
+			print("N content  (%)", "{:0,.2f}".format(sumN * 100 / sumLength))
+			scaffold_len = sorted(self.chromosomeLength.values(), reverse=True)
+			half_sum_len = sum(scaffold_len)/2
+
+			sum_len = 0
+			i = 0
+			while i < len(scaffold_len) and sum_len < half_sum_len:
+				sum_len += scaffold_len[i]
+				i += 1
+
+			print("N50:", scaffold_len[i-1])
+			print("L50:", i)
 
 	def checkChromosome(self, chromosome, start=0, end=1):
 		if(start>end):
