@@ -80,7 +80,7 @@ class Fasta_manager(object):
 			print("Number of chromosomes/scaffolds/contigs: ", "{:0,}".format(len(fasta)))
 			sumGC = count_bases['G'] + count_bases['C'] + count_bases['S'] + count_bases['Y']/2 + count_bases['K']/2 + count_bases['M']/2 + count_bases['B']*2/3 + count_bases['D']/3 + count_bases['H']/3 + count_bases['V']*2/3 + count_bases['N']/2
 			print("GC content (%):", "{:0,.2f}".format(sumGC * 100 / sum(count_bases.values())))
-			print("N content  (%)", "{:0,.2f}".format(count_bases['N'] * 100 / sum(count_bases.values())))
+			print("N content (%):", "{:0,.2f}".format(count_bases['N'] * 100 / sum(count_bases.values())))
 			scaffold_len = sorted(self.chromosomeLength.values(), reverse=True)
 			half_sum_len = sum(scaffold_len)/2
 
