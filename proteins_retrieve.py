@@ -68,7 +68,7 @@ def main():
 
 	# FInding promoter on custom list
 	for each_gene in custom_gene_list:
-		print(each_gene)
+# 		print(each_gene)
 		if len(each_gene.split()) > 1:
 			protein_id = each_gene.split()[0]
 			protein_symbol = each_gene.split()[1]
