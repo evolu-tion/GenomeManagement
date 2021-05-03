@@ -73,7 +73,7 @@ def main():
 			protein_id = each_gene.split()[0]
 			protein_symbol = each_gene.split()[1]
 		else:
-			protein_id = each_gene
+			protein_id = each_gene.split()[0]
 
 		if protein.checkChromosome(protein_id):
 			print("Found protein:", protein_id)
