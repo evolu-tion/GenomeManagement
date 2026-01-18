@@ -1,40 +1,9 @@
 #!/usr/bin/env python
-""" 
-Copyright (c) 2016 King Mongkut's University technology Thonburi
-Author: Nattawet Sriwichai
-Contact: nattawet.sri@mail.kmutt.ac.th
-Version: 1.1b 2016-02-26
-License: MIT License
-
-The MIT License
-
-Copyright (c) 2016 King Mongkut's University technology Thonburi
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE. 
 
 
-Please cite the following paper:
-Chi-Nga Chow, Han-Qin Zheng, Nai-Yun Wu, Chia-Hung Chien, Hsien-Da Huang, Tzong-Yi Lee, Yi-Fan Chiang-Hsieh, Ping-Fu Hou, Tien-Yi Yang, and Wen-Chi Chang. 
-PlantPAN 2.0: an update of plant promoter analysis navigator for reconstructing transcriptional regulatory networks in plants, Nucleic Acids Res. 2015 : gkv1035v1-gkv1035.
-"""
 
 ############################### Initial Configuration ###########################################
+VERSION = "2.0.0"
 
 # Input files is promoter sequence (fasta format) 
 file_promoter = "out/promoter.fa"
@@ -69,9 +38,10 @@ import os
 import sys
 import time, datetime
 
-if not os.path.exists(file_promoter):
-	print("Location of fasta file is not correct")
-	exit()
+# Initial check moved to main
+# if not os.path.exists(file_promoter):
+# 	print("Location of fasta file is not correct")
+# 	exit()
 
 os.makedirs(os.path.dirname(backup_file_path), exist_ok=True)
 
@@ -157,49 +127,54 @@ def PlantPAN2(seq_name, sequence):
 		return [table_data, CpG_island]
 
 
-# Run PlantPAN2.0 of all sequence in fasta file
-if not os.path.exists(file_promoter):
-	print("Location of promoter sequence file is not correct")
-	exit()
 
-os.makedirs(os.path.dirname(backup_file_path), exist_ok=True)
-os.makedirs(os.path.dirname(file_name_tfbs_on_promoter), exist_ok=True)
-f = open(file_name_tfbs_on_promoter, 'a')
-# f.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
+def main():
+	if not os.path.exists(file_promoter):
+		print("Location of promoter sequence file is not correct")
+		# exit() # Check if we should exit or return
+		sys.exit(1)
 
-os.makedirs(os.path.dirname(file_name_tfbs_on_promoter_filltered), exist_ok=True)
-f_filltered = open(file_name_tfbs_on_promoter_filltered, 'a')
-# f_filltered.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
+	os.makedirs(os.path.dirname(backup_file_path), exist_ok=True)
+	os.makedirs(os.path.dirname(file_name_tfbs_on_promoter), exist_ok=True)
+	f = open(file_name_tfbs_on_promoter, 'a')
+	# f.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
 
-os.makedirs(os.path.dirname(file_name_tfbs_on_promoter_CpG_island), exist_ok=True)
-f_CpG_island = open(file_name_tfbs_on_promoter_CpG_island, 'a')
-# f_CpG_island.write('Promoter_id\tBegin\tEnd\tLength\tGC freq\tCpG ratio\tAT skew\tCG skew\tStart-p\tStrand\tStrand-p\n')
+	os.makedirs(os.path.dirname(file_name_tfbs_on_promoter_filltered), exist_ok=True)
+	f_filltered = open(file_name_tfbs_on_promoter_filltered, 'a')
+	# f_filltered.write('Promoter_ID\tMatrix ID\tFamily\tPosition\tStrand\tSimilar Score\tHit Sequence\n')
+
+	os.makedirs(os.path.dirname(file_name_tfbs_on_promoter_CpG_island), exist_ok=True)
+	f_CpG_island = open(file_name_tfbs_on_promoter_CpG_island, 'a')
+	# f_CpG_island.write('Promoter_id\tBegin\tEnd\tLength\tGC freq\tCpG ratio\tAT skew\tCG skew\tStart-p\tStrand\tStrand-p\n')
 
 
-fasta_file = open(file_promoter, 'r')
-gene = fasta_file.read().split('>')[1:]
-for i in range(6085,len(gene)):
-	gene[i] = gene[i].split('\n')
-	gene[i][0] = gene[i][0].split('|')
-	gene_name = gene[i][0][0]
-	seq = gene[i][1]
-	
-	time.sleep(2)
-	print(datetime.datetime.now(), i, gene_name, sep="\t")
-	table = PlantPAN2(gene_name, seq)
-	for data in table[0]:
-		for item in data:
-			f.write(item+'\t')
-		f.write('\n')
-		if (float(data[5]) >= filltered_similar_cutoff and  data[4] == '+' ):
+	fasta_file = open(file_promoter, 'r')
+	gene = fasta_file.read().split('>')[1:]
+	for i in range(6085,len(gene)):
+		gene[i] = gene[i].split('\n')
+		gene[i][0] = gene[i][0].split('|')
+		gene_name = gene[i][0][0]
+		seq = gene[i][1]
+		
+		time.sleep(2)
+		print(datetime.datetime.now(), i, gene_name, sep="\t")
+		table = PlantPAN2(gene_name, seq)
+		for data in table[0]:
 			for item in data:
-				f_filltered.write(item+'\t')
-			f_filltered.write('\n')
-	if table[1] != "" :
-		for cpg_data in table[1]:
-			f_CpG_island.write(gene_name+'\t')
-			for item in cpg_data:
-				f_CpG_island.write(str(item)+'\t')
-			f_CpG_island.write('\n')
-f.close()
-f_filltered.close()
+				f.write(item+'\t')
+			f.write('\n')
+			if (float(data[5]) >= filltered_similar_cutoff and  data[4] == '+' ):
+				for item in data:
+					f_filltered.write(item+'\t')
+				f_filltered.write('\n')
+		if table[1] != "" :
+			for cpg_data in table[1]:
+				f_CpG_island.write(gene_name+'\t')
+				for item in cpg_data:
+					f_CpG_island.write(str(item)+'\t')
+				f_CpG_island.write('\n')
+	f.close()
+	f_filltered.close()
+
+if __name__ == "__main__":
+	main()

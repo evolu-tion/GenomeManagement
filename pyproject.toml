@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genomemanagement"
+version = "2.0.0"
+authors = [
+  { name="Nattawet Sriwichai", email="nattawet.sri@mail.kmutt.ac.th" },
+]
+description = "Genome Management Package"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+promoter-retrieve = "genomemanagement.promoter_retrieve:main"
+proteins-retrieve = "genomemanagement.proteins_retrieve:main"
+get-genome-statistic = "genomemanagement.get_genome_statistic:main"
+plantpan2 = "genomemanagement.PlantPAN2:main"
+plantpan3 = "genomemanagement.PlantPAN3:main"
+meme-xml2bed = "genomemanagement.memeXml2bed:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

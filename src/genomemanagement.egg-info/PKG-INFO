@@ -1,3 +1,16 @@
+Metadata-Version: 2.4
+Name: genomemanagement
+Version: 2.0.0
+Summary: Genome Management Package
+Author-email: Nattawet Sriwichai <nattawet.sri@mail.kmutt.ac.th>
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
 # Genome Management Package
 
 This tool is copyright 2016 by Nattawet Sriwichai,
