@@ -2,6 +2,14 @@
 
 GenomeManagement requires Python 3.7 or higher.
 
+## Install from PyPI
+
+Once released, you can install the package directly from PyPI:
+
+```bash
+pip install genomemanagement
+```
+
 ## Install from GitHub
 
 The easiest way to install the package is directly from the GitHub repository:

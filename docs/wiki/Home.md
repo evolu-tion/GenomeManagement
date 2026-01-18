@@ -16,3 +16,4 @@
 - [[Installation]] - Get started with GenomeManagement.
 - [[CLI Tools]] - Learn how to use the command-line utilities.
 - [[Python API]] - Developer documentation for the Python library.
+- [[Publishing]] - How to publish new versions to PyPI.

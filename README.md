@@ -6,6 +6,10 @@ All rights reserved. See the licence text below.
 
 # Installation
 
+## Install from PyPI
+
+    pip install genomemanagement
+
 ## Install from GitHub
 
     pip install git+https://github.com/evolu-tion/GenomeManagement.git
