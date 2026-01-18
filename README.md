@@ -6,7 +6,19 @@ All rights reserved. See the licence text below.
 
 # Installation
 
-    python3 -m pip install -e .
+## Install from GitHub
+
+    pip install git+https://github.com/evolu-tion/GenomeManagement.git
+
+## Install from Source (Standard)
+
+    git clone https://github.com/evolu-tion/GenomeManagement.git
+    cd GenomeManagement
+    pip install .
+
+## Install for Development (Editable)
+
+    pip install -e .
 
 # Usage: Promoter of genes retrieving
 

@@ -2,16 +2,41 @@
 
 GenomeManagement requires Python 3.7 or higher.
 
-## Install from Source
+## Install from GitHub
 
-You can install the package directly from the source code in "editable" mode, which allows you to modify the code and see changes immediately.
-
-1.  Clone the repository or download the source code.
-2.  Navigate to the project root directory.
-3.  Run the installation command:
+The easiest way to install the package is directly from the GitHub repository:
 
 ```bash
-python3 -m pip install -e .
+pip install git+https://github.com/evolu-tion/GenomeManagement.git
+```
+
+## Install from Source
+
+You can clone the repository and install it locally.
+
+### Standard Installation
+
+Use this for normal usage:
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/evolu-tion/GenomeManagement.git
+    ```
+2.  Navigate to the directory:
+    ```bash
+    cd GenomeManagement
+    ```
+3.  Install the package:
+    ```bash
+    pip install .
+    ```
+
+### Development Installation
+
+Use this if you plan to modify the code:
+
+```bash
+pip install -e .
 ```
 
 ## Verify Installation
