@@ -17,6 +17,10 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest", "build", "twine"]
+test = ["pytest"]
+
 [project.scripts]
 promoter-retrieve = "genomemanagement.promoter_retrieve:main"
 proteins-retrieve = "genomemanagement.proteins_retrieve:main"
